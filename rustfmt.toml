@@ -1,0 +1,9 @@
+max_width = 120
+imports_granularity = "Module"
+indent_style = "Visual"
+fn_params_layout = "Compressed"
+control_brace_style = "ClosingNextLine"
+brace_style = "PreferSameLine"
+normalize_comments = true
+comment_width = 120
+group_imports = "StdExternalCrate"
