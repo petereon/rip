@@ -10,6 +10,5 @@ TODOs:
 - [ ] Parse version constraints
 - [ ] Create better handling for unconformant versions
 - [ ] Develop strategy to parse multi-fields
-- [ ] Parse version constraints
 - [ ] Parse remaining metadata
 - [ ] ...
