@@ -159,6 +159,8 @@ pub fn parse_metadata(metadata_string: String) -> Result<Metadata, Error> {
 
     let version = parse_version(get_metadata_attribute(&metadata_string, "Version:".to_string())?).unwrap();
 
+    // FIXME: There is much more metadata to be parsed here but I am currently focusing on version parsing
+
     Ok(Metadata { metadata_version,
                   name,
                   version,
