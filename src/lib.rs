@@ -1,7 +1,13 @@
+use either::Either;
 use lazy_static::lazy_static;
 use regex::Regex;
 
-#[derive(Debug, PartialEq, Eq)]
+pub struct LocalVersion {
+    pub parsed: Vec<Either<String, u32>>,
+    pub local_version_string: String,
+}
+
+#[derive(Debug)]
 pub struct Version {
     pub epoch: Option<u32>,
     pub release: Vec<u32>,
@@ -10,6 +16,51 @@ pub struct Version {
     pub dev: Option<u32>,
     pub local: Option<String>,
     pub version_string: String,
+}
+
+impl PartialEq for Version {
+    fn eq(&self, other: &Self) -> bool {
+        self.epoch == other.epoch
+        && self.release == other.release
+        && self.pre == other.pre
+        && self.post == other.post
+        && self.dev == other.dev
+        && self.local == other.local
+    }
+}
+
+impl PartialOrd for Version {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.epoch != other.epoch {
+            return Some(self.epoch.cmp(&other.epoch));
+        }
+        if self.release != other.release {
+            return Some(self.release.cmp(&other.release));
+        }
+        if self.pre != other.pre {
+            match (self.pre.clone(), other.pre.clone()) {
+                (Some(_), None) => return Some(std::cmp::Ordering::Greater),
+                (None, Some(_)) => return Some(std::cmp::Ordering::Less),
+                (None, None) => return Some(std::cmp::Ordering::Equal),
+                (Some((this_pre, this_version)), Some((other_pre, other_version))) => {
+                    if this_pre != other_pre {
+                        return Some(this_pre.cmp(&other_pre));
+                    }
+                    return Some(this_version.cmp(&other_version));
+                }
+            }
+        }
+        if self.post != other.post {
+            return Some(self.post.cmp(&other.post));
+        }
+        if self.dev != other.dev {
+            return Some(self.dev.cmp(&other.dev));
+        }
+        if self.local != other.local {
+            return Some(self.local.cmp(&other.local));
+        }
+        return None;
+    }
 }
 
 type Operator = String;
