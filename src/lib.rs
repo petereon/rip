@@ -104,14 +104,6 @@ pub struct Metadata {
     pub provides_extras: Option<Vec<Extra>>,
 }
 
-pub fn get_metadata_attribute(metadata_string: &String, attribute: String) -> Result<String, Error> {
-    let attribute = metadata_string.lines()
-                                   .find(|line| line.starts_with(&attribute))
-                                   .map(|line| line.split(": ").nth(1).unwrap().to_string())
-                                   .ok_or(format!("{} not found", attribute))?;
-    Ok(attribute)
-}
-
 /// Parsing PEP 440 conformant version strings
 ///
 /// https://peps.python.org/pep-0440/
@@ -170,6 +162,14 @@ pub fn parse_version(version_string: String) -> Result<Version, Error> {
                  dev,
                  local,
                  version_string })
+}
+
+pub fn get_metadata_attribute(metadata_string: &String, attribute: String) -> Result<String, Error> {
+    let attribute = metadata_string.lines()
+                                   .find(|line| line.starts_with(&attribute))
+                                   .map(|line| line.split(": ").nth(1).unwrap().to_string())
+                                   .ok_or(format!("{} not found", attribute))?;
+    Ok(attribute)
 }
 
 pub fn parse_metadata(metadata_string: String) -> Result<Metadata, Error> {
