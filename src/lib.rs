@@ -158,7 +158,8 @@ pub fn parse_version(version_string: String) -> Result<Version, Error> {
         pre = None;
     }
 
-    let post = captures.name("post").map(|post| post.as_str().parse::<u32>().unwrap());
+    let post = captures.name("post_n2")
+                       .map(|post| post.as_str().parse::<u32>().unwrap());
     let dev = captures.name("dev_n").map(|dev| dev.as_str().parse::<u32>().unwrap());
     let local = captures.name("local").map(|local| local.as_str().to_string());
 
