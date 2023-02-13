@@ -2,6 +2,13 @@ use either::Either;
 use lazy_static::lazy_static;
 use regex::Regex;
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+pub enum PreReleaseType {
+    Alpha,
+    Beta,
+    Rc,
+}
+
 pub struct LocalVersion {
     pub parsed: Vec<Either<String, u32>>,
     pub local_version_string: String,
@@ -11,7 +18,7 @@ pub struct LocalVersion {
 pub struct Version {
     pub epoch: Option<u32>,
     pub release: Vec<u32>,
-    pub pre: Option<(String, Vec<u32>)>,
+    pub pre: Option<(PreReleaseType, Vec<u32>)>,
     pub post: Option<u32>,
     pub dev: Option<u32>,
     pub local: Option<String>,
@@ -131,20 +138,33 @@ pub fn parse_version(version_string: String) -> Result<Version, Error> {
                                                      .map(|n| n.parse::<u32>().unwrap())
                                                      .collect::<Vec<u32>>()
                                           });
-    let pre = captures.name("pre").map(|pre| {
-                                      (pre.as_str().to_string(),
-                                       captures.name("pre_l").map(|pre_l| pre_l.as_str().to_string()).unwrap(),
-                                       captures.name("pre_n")
-                                               .map(|pre_n| pre_n.as_str().parse::<u32>().unwrap())
-                                               .unwrap())
-                                  });
+
+    let pre: Option<(PreReleaseType, Vec<u32>)>;
+
+    if captures.name("pre").is_some() {
+        let pre_l = captures.name("pre_l").map(|pre_l| pre_l.as_str()).unwrap();
+        let pre_n = captures.name("pre_n")
+                            .map(|pre_n| pre_n.as_str().parse::<u32>().unwrap())
+                            .unwrap();
+        pre = Some((match pre_l {
+                        "a" | "alpha" => PreReleaseType::Alpha,
+                        "b" | "beta" => PreReleaseType::Beta,
+                        "c" | "rc" | "pre" | "preview" => PreReleaseType::Rc,
+                        _ => unreachable!(),
+                    },
+                    vec![pre_n]));
+    }
+    else {
+        pre = None;
+    }
+
     let post = captures.name("post").map(|post| post.as_str().parse::<u32>().unwrap());
-    let dev = captures.name("dev").map(|dev| dev.as_str().parse::<u32>().unwrap());
+    let dev = captures.name("dev_n").map(|dev| dev.as_str().parse::<u32>().unwrap());
     let local = captures.name("local").map(|local| local.as_str().to_string());
 
     Ok(Version { epoch,
                  release: release.unwrap(),
-                 pre: pre.map(|pre| (pre.1, vec![pre.2])),
+                 pre: pre,
                  post,
                  dev,
                  local,
