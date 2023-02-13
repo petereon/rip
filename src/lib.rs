@@ -113,6 +113,7 @@ pub struct Metadata {
 ///
 /// Returns `Result<Version, Error>`: A Version object
 pub fn parse_version(version_string: String) -> Result<Version, Error> {
+    // TODO: This function has been largely written by Copilot and needs to be cleaned up
     lazy_static! {
         static ref RE: Regex = Regex::new(
             r"^\s*v?(?:(?:(?P<epoch>[0-9]+)!)?(?P<release>[0-9]+(?:\.[0-9]+)*)(?P<pre>[-_\.]?(?P<pre_l>(a|b|c|rc|alpha|beta|pre|preview))[-_\.]?(?P<pre_n>[0-9]+)?)?(?P<post>(?:-(?P<post_n1>[0-9]+))|(?:[-_\.]?(?P<post_l>post|rev|r)[-_\.]?(?P<post_n2>[0-9]+)?))?(?P<dev>[-_\.]?(?P<dev_l>dev)[-_\.]?(?P<dev_n>[0-9]+)?)?)(?:\+(?P<local>[a-z0-9]+(?:[-_\.][a-z0-9]+)*))?\s*$"
