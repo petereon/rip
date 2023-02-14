@@ -198,22 +198,98 @@ mod version_compare {
         assert!(version1 < version2);
     }
 
-    // #[test]
-    // fn test_version_compare_epoch() {
-    //     let version1 = rip::Version { epoch: None,
-    //                                   release: [1, 5, 4].to_vec(),
-    //                                   pre: None,
-    //                                   post: None,
-    //                                   dev: None,
-    //                                   local: None,
-    //                                   version_string: "1.5.3".to_string() };
-    //     let version2 = rip::Version { epoch: None,
-    //                                   release: [1, 5, 4].to_vec(),
-    //                                   pre: None,
-    //                                   post: None,
-    //                                   dev: None,
-    //                                   local: None,
-    //                                   version_string: "1.05.4".to_string() };
-    //     assert!(version1 < version2);
-    // }
+    #[test]
+    fn test_version_compare_pre_release() {
+        let version1 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: Some((rip::PreReleaseType::Alpha, [1].to_vec())),
+                                      post: None,
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        let version2 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: Some((rip::PreReleaseType::Beta, [1].to_vec())),
+                                      post: None,
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        assert!(version1 < version2);
+    }
+
+    #[test]
+    fn test_version_compare_pre_release_different_release() {
+        let version1 = rip::Version { epoch: None,
+                                      release: [1, 5, 4].to_vec(),
+                                      pre: Some((rip::PreReleaseType::Alpha, [1].to_vec())),
+                                      post: None,
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        let version2 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: Some((rip::PreReleaseType::Beta, [1].to_vec())),
+                                      post: None,
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        assert!(version1 > version2);
+    }
+
+    #[test]
+    fn test_version_compare_post_release() {
+        let version1 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: Some(1),
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        let version2 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: Some(2),
+                                      dev: None,
+                                      local: None,
+                                      version_string: "".to_string() };
+        assert!(version1 < version2);
+    }
+
+    #[test]
+    fn test_version_compare_dev_release() {
+        let version1 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: None,
+                                      dev: Some(1),
+                                      local: None,
+                                      version_string: "".to_string() };
+        let version2 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: None,
+                                      dev: Some(2),
+                                      local: None,
+                                      version_string: "".to_string() };
+        assert!(version1 < version2);
+    }
+
+    #[test]
+    fn test_version_compare_local_release() {
+        let version1 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: None,
+                                      dev: None,
+                                      local: Some("local1".to_string()),
+                                      version_string: "".to_string() };
+        let version2 = rip::Version { epoch: None,
+                                      release: [1, 5, 3].to_vec(),
+                                      pre: None,
+                                      post: None,
+                                      dev: None,
+                                      local: Some("local2".to_string()),
+                                      version_string: "".to_string() };
+        assert!(version1 < version2);
+    }
 }
