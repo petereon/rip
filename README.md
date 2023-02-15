@@ -15,3 +15,6 @@ TODOs:
 - [ ] Develop strategy to parse multi-fields
 - [ ] Parse remaining metadata
 - [ ] ...
+
+
+> I am not sure whether I dislike Rust as a whole or it's really just not very well equipped for text parsing, archiving and moving on!
