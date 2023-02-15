@@ -123,8 +123,8 @@ pub fn parse_version(version_string: String) -> Result<Version, Error> {
     let captures = RE.captures(&version_string)
                      .ok_or(format!("{} is not a valid version", version_string))?;
 
-    let epoch = captures.name("epoch")
-                        .map(|epoch| epoch.as_str().parse::<u32>().unwrap());
+    let epoch = captures.name("epoch").map(|epoch| epoch.as_str().parse::<u32>().unwrap());
+
     let release = captures.name("release").map(|release| {
                                               release.as_str()
                                                      .split(".")
@@ -151,8 +151,7 @@ pub fn parse_version(version_string: String) -> Result<Version, Error> {
         pre = None;
     }
 
-    let post = captures.name("post_n2")
-                       .map(|post| post.as_str().parse::<u32>().unwrap());
+    let post = captures.name("post_n2").map(|post| post.as_str().parse::<u32>().unwrap());
     let dev = captures.name("dev_n").map(|dev| dev.as_str().parse::<u32>().unwrap());
     let local = captures.name("local").map(|local| local.as_str().to_string());
 
@@ -174,8 +173,7 @@ pub fn get_metadata_attribute(metadata_string: &String, attribute: String) -> Re
 }
 
 pub fn parse_metadata(metadata_string: String) -> Result<Metadata, Error> {
-    let metadata_version =
-        parse_version(get_metadata_attribute(&metadata_string, "Metadata-Version:".to_string())?).unwrap();
+    let metadata_version = parse_version(get_metadata_attribute(&metadata_string, "Metadata-Version:".to_string())?).unwrap();
 
     let name = get_metadata_attribute(&metadata_string, "Name:".to_string())?;
 
